@@ -59,14 +59,16 @@ public class SpawnEggRegistry {
         register(EntityType.PILLAGER, Items.PILLAGER_SPAWN_EGG);
         register(EntityType.VINDICATOR, Items.VINDICATOR_SPAWN_EGG);
         register(EntityType.EVOKER, Items.EVOKER_SPAWN_EGG);
-        register(EntityType.ILLUSIONER, Items.ILLUSIONER_SPAWN_EGG);
+        // ILLUSIONER spawn egg not available in this version
+
         register(EntityType.WITCH, Items.WITCH_SPAWN_EGG);
         register(EntityType.VEX, Items.VEX_SPAWN_EGG);
         register(EntityType.PIGLIN_BRUTE, Items.PIGLIN_BRUTE_SPAWN_EGG);
         register(EntityType.ZOMBIFIED_PIGLIN, Items.ZOMBIFIED_PIGLIN_SPAWN_EGG);
         register(EntityType.ZOGLIN, Items.ZOGLIN_SPAWN_EGG);
         register(EntityType.BOGGED, Items.BOGGED_SPAWN_EGG);
-        register(EntityType.CREAKING, Items.CREAKING_SPAWN_EGG);
+        // CREAKING spawn egg not available in this version
+
 
         // Rare/utility mobs
         register(EntityType.SLIME, Items.SLIME_SPAWN_EGG);

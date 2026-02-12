@@ -4,8 +4,14 @@ import com.silktouch.config.ModConfig;
 import com.silktouch.util.MobCategory;
 import com.silktouch.util.SpawnEggRegistry;
 import net.minecraft.advancement.AdvancementEntry;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.passive.TameableEntity;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -34,7 +40,7 @@ public class MobDeathHandler {
 
         // Check if player has Silk Touch on main hand
         ItemStack mainHandItem = player.getMainHandStack();
-        if (!EnchantmentHelper.hasSilkTouch(mainHandItem)) {
+        if (getEnchantmentLevel(world, net.minecraft.enchantment.Enchantments.SILK_TOUCH, mainHandItem) <= 0) {
             return;
         }
 
@@ -53,7 +59,7 @@ public class MobDeathHandler {
         }
 
         // Calculate drop chance
-        double chance = calculateDropChance(entity, player, category, mainHandItem);
+        double chance = calculateDropChance(entity, player, category, mainHandItem, world);
         if (chance <= 0) {
             return;
         }
@@ -84,7 +90,7 @@ public class MobDeathHandler {
     }
 
     private static double calculateDropChance(LivingEntity entity, ServerPlayerEntity player, 
-                                            MobCategory category, ItemStack weapon) {
+                                            MobCategory category, ItemStack weapon, ServerWorld world) {
         ModConfig config = ModConfig.get();
         double baseChance;
 
@@ -108,7 +114,7 @@ public class MobDeathHandler {
         }
 
         // Looting bonus
-        int lootingLevel = EnchantmentHelper.getLevel(Enchantments.LOOTING, weapon);
+        int lootingLevel = getEnchantmentLevel(world, net.minecraft.enchantment.Enchantments.LOOTING, weapon);
         baseChance += lootingLevel * config.lootingBonusPerLevel;
 
         // Rare mobs require Looting II+ with Silk Touch
@@ -160,8 +166,8 @@ public class MobDeathHandler {
         }
 
         // Check if tamed
-        if (config.noTamedDrops && entity instanceof MobEntity mob) {
-            if (mob.isTamed()) {
+        if (config.noTamedDrops && entity instanceof TameableEntity tameable) {
+            if (tameable.isTamed()) {
                 return false;
             }
         }
@@ -238,7 +244,7 @@ public class MobDeathHandler {
 
         if (!entityTag.isEmpty()) {
             eggNbt.put("EntityTag", entityTag);
-            eggStack.setNbt(eggNbt);
+            eggStack.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(eggNbt));
         }
 
         return eggStack;
@@ -247,7 +253,19 @@ public class MobDeathHandler {
     private static void applyDurabilityTax(ServerPlayerEntity player, ItemStack weapon) {
         ModConfig config = ModConfig.get();
         if (config.extraDurabilityCost > 0 && weapon.isDamageable()) {
-            weapon.damage(config.extraDurabilityCost, player, net.minecraft.util.Hand.MAIN_HAND);
+            weapon.damage(config.extraDurabilityCost, player, EquipmentSlot.MAINHAND);
         }
+    }
+
+    /**
+     * Helper method to get enchantment level from an item stack
+     */
+    private static int getEnchantmentLevel(ServerWorld world, RegistryKey<Enchantment> enchantmentKey, ItemStack stack) {
+        var enchantmentRegistry = world.getRegistryManager().get(RegistryKeys.ENCHANTMENT);
+        var enchantmentEntry = enchantmentRegistry.getEntry(enchantmentKey);
+        if (enchantmentEntry.isPresent()) {
+            return EnchantmentHelper.getLevel(enchantmentEntry.get(), stack);
+        }
+        return 0;
     }
 }

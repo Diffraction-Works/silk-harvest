@@ -95,8 +95,8 @@ public enum MobCategory {
                type == EntityType.PIGLIN_BRUTE ||
                type == EntityType.ZOMBIFIED_PIGLIN ||
                type == EntityType.ZOGLIN ||
-               type == EntityType.BOGGED ||
-               type == EntityType.CREAKING;
+               type == EntityType.BOGGED;
+
     }
 
     private static boolean isRareUtility(EntityType<?> type) {
