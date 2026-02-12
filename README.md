@@ -1,4 +1,4 @@
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------# Silk Touch Spawn Eggs
+# Silk Touch Spawn Eggs
 
 A **Fabric mod for Minecraft 1.21.1** that adds a balanced system where mobs can drop their **existing vanilla spawn eggs** when killed by a player using an item enchanted with **Silk Touch**.
 
