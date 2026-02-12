@@ -1,0 +1,37 @@
+# Gradle
+.gradle/
+build/
+out/
+classes/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.swp
+*.swo
+*~
+
+# Minecraft
+run/
+run-server/
+run-client/
+logs/
+crash-reports/
+saves/
+screenshots/
+options.txt
+usercache.json
+usernamecache.json
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Project specific
+TODO.md
+*.jar
+!gradle/wrapper/gradle-wrapper.jar

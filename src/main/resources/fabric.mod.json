@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "silktouch-spawn-eggs",
+  "version": "${version}",
+  "name": "Silk Touch Spawn Eggs",
+  "description": "Mobs drop vanilla spawn eggs when killed with Silk Touch",
+  "authors": [
+    "SilkTouch Team"
+  ],
+  "contact": {
+    "homepage": "https://github.com/silktouch/spawn-eggs",
+    "sources": "https://github.com/silktouch/spawn-eggs"
+  },
+  "license": "MIT",
+  "icon": "assets/silktouch-spawn-eggs/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.silktouch.SilkTouchSpawnEggsMod"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
