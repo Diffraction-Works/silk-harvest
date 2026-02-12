@@ -35,3 +35,6 @@ desktop.ini
 TODO.md
 *.jar
 !gradle/wrapper/gradle-wrapper.jar
+
+#blackbox
+.blackboxrules
