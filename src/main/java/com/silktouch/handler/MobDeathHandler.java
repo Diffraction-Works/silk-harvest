@@ -92,7 +92,7 @@ public class MobDeathHandler {
      * Drop an item at the entity's position
      */
     private static void dropItem(ServerWorld world, LivingEntity entity, ItemStack stack) {
-        Vec3d pos = entity.getPos();
+        Vec3d pos = entity.getEyePos();
         ItemEntity itemEntity = new ItemEntity(world, pos.x, pos.y, pos.z, stack);
         itemEntity.setToDefaultPickupDelay();
         world.spawnEntity(itemEntity);
@@ -150,9 +150,13 @@ public class MobDeathHandler {
         }
 
         if (requiredAdvancement != null) {
-            AdvancementEntry advancement = player.getServer().getAdvancementLoader().get(requiredAdvancement);
-            if (advancement != null) {
-                return player.getAdvancementTracker().getProgress(advancement).isDone();
+            // Use the entity's world to get the server
+            var server = ((ServerWorld) entity.getEntityWorld()).getServer();
+            if (server != null) {
+                AdvancementEntry advancement = server.getAdvancementLoader().get(requiredAdvancement);
+                if (advancement != null) {
+                    return player.getAdvancementTracker().getProgress(advancement).isDone();
+                }
             }
         }
 
@@ -219,13 +223,10 @@ public class MobDeathHandler {
      * Helper method to get enchantment level from an item stack
      */
     private static int getEnchantmentLevel(ServerWorld world, RegistryKey<Enchantment> enchantmentKey, ItemStack stack) {
-        var enchantmentRegistry = world.getRegistryManager().get(RegistryKeys.ENCHANTMENT);
-        var enchantment = enchantmentRegistry.get(enchantmentKey);
-        if (enchantment != null) {
-            var enchantmentEntry = enchantmentRegistry.getEntry(enchantment);
-            if (enchantmentEntry != null) {
-                return EnchantmentHelper.getLevel(enchantmentEntry, stack);
-            }
+        var enchantmentRegistry = world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT);
+        var enchantmentEntry = enchantmentRegistry.getOptional(enchantmentKey);
+        if (enchantmentEntry.isPresent()) {
+            return EnchantmentHelper.getLevel(enchantmentEntry.get(), stack);
         }
         return 0;
     }
