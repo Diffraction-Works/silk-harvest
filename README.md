@@ -89,4 +89,4 @@ The built jar will be in `build/libs/`.
 
 ## License
 
-MIT License
+All Rights Reserved
