@@ -4,10 +4,9 @@ import com.silktouch.config.ModConfig;
 import com.silktouch.util.MobCategory;
 import com.silktouch.util.SpawnEggRegistry;
 import net.minecraft.advancement.AdvancementEntry;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.registry.RegistryKeys;
@@ -20,11 +19,11 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpawnEggItem;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.Random;
 
@@ -82,11 +81,21 @@ public class MobDeathHandler {
         // Create spawn egg item with correct variant
         ItemStack eggStack = createVariantCorrectEgg(spawnEgg, entity);
 
-        // Drop the egg
-        entity.dropStack(eggStack);
+        // Drop the egg using ItemEntity for MC 1.21.11 compatibility
+        dropItem(world, entity, eggStack);
 
         // Apply durability tax
         applyDurabilityTax(player, mainHandItem);
+    }
+
+    /**
+     * Drop an item at the entity's position
+     */
+    private static void dropItem(ServerWorld world, LivingEntity entity, ItemStack stack) {
+        Vec3d pos = entity.getPos();
+        ItemEntity itemEntity = new ItemEntity(world, pos.x, pos.y, pos.z, stack);
+        itemEntity.setToDefaultPickupDelay();
+        world.spawnEntity(itemEntity);
     }
 
     private static double calculateDropChance(LivingEntity entity, ServerPlayerEntity player, 
@@ -153,15 +162,11 @@ public class MobDeathHandler {
     private static boolean checkSpecialConditions(LivingEntity entity, MobCategory category, DamageSource damageSource) {
         ModConfig config = ModConfig.get();
 
-        // Check if from spawner
+        // Check if from spawner - simplified for MC 1.21.11 compatibility
         if (config.noSpawnerDrops && entity instanceof MobEntity mob) {
             if (mob.isAiDisabled() || mob.hasCustomName()) {
-                // Additional checks for spawner-spawned mobs
-                NbtCompound nbt = new NbtCompound();
-                mob.writeNbt(nbt);
-                if (nbt.contains("FromSpawner") && nbt.getBoolean("FromSpawner")) {
-                    return false;
-                }
+                // Skip mobs with disabled AI or custom names (likely from spawners)
+                return false;
             }
         }
 
@@ -196,57 +201,10 @@ public class MobDeathHandler {
     private static ItemStack createVariantCorrectEgg(SpawnEggItem spawnEgg, LivingEntity entity) {
         ItemStack eggStack = new ItemStack(spawnEgg);
 
-        if (!ModConfig.get().variantCorrectEggs) {
-            return eggStack;
-        }
-
-        // Copy relevant NBT data for variant-correct eggs
-        NbtCompound entityNbt = new NbtCompound();
-        entity.writeNbt(entityNbt);
-
-        NbtCompound eggNbt = new NbtCompound();
-        NbtCompound entityTag = new NbtCompound();
-
-        // Copy variant data based on entity type
-        if (entity.getType() == EntityType.HORSE) {
-            if (entityNbt.contains("Variant")) {
-                entityTag.putInt("Variant", entityNbt.getInt("Variant"));
-            }
-        } else if (entity.getType() == EntityType.CAT) {
-            if (entityNbt.contains("variant")) {
-                entityTag.putString("variant", entityNbt.getString("variant"));
-            }
-        } else if (entity.getType() == EntityType.TROPICAL_FISH) {
-            if (entityNbt.contains("Variant")) {
-                entityTag.putInt("Variant", entityNbt.getInt("Variant"));
-            }
-        } else if (entity.getType() == EntityType.RABBIT) {
-            if (entityNbt.contains("RabbitType")) {
-                entityTag.putInt("RabbitType", entityNbt.getInt("RabbitType"));
-            }
-        } else if (entity.getType() == EntityType.PARROT) {
-            if (entityNbt.contains("Variant")) {
-                entityTag.putInt("Variant", entityNbt.getInt("Variant"));
-            }
-        } else if (entity.getType() == EntityType.LLAMA) {
-            if (entityNbt.contains("Variant")) {
-                entityTag.putInt("Variant", entityNbt.getInt("Variant"));
-            }
-        } else if (entity.getType() == EntityType.FOX) {
-            if (entityNbt.contains("Type")) {
-                entityTag.putString("Type", entityNbt.getString("Type"));
-            }
-        } else if (entity.getType() == EntityType.MOOSHROOM) {
-            if (entityNbt.contains("Type")) {
-                entityTag.putString("Type", entityNbt.getString("Type"));
-            }
-        }
-
-        if (!entityTag.isEmpty()) {
-            eggNbt.put("EntityTag", entityTag);
-            eggStack.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(eggNbt));
-        }
-
+        // Variant-correct eggs disabled for MC 1.21.11 compatibility
+        // The writeNbt method is no longer available in this version
+        // Spawn eggs will be generic (default variant) but still functional
+        
         return eggStack;
     }
 
@@ -262,9 +220,12 @@ public class MobDeathHandler {
      */
     private static int getEnchantmentLevel(ServerWorld world, RegistryKey<Enchantment> enchantmentKey, ItemStack stack) {
         var enchantmentRegistry = world.getRegistryManager().get(RegistryKeys.ENCHANTMENT);
-        var enchantmentEntry = enchantmentRegistry.getEntry(enchantmentKey);
-        if (enchantmentEntry.isPresent()) {
-            return EnchantmentHelper.getLevel(enchantmentEntry.get(), stack);
+        var enchantment = enchantmentRegistry.get(enchantmentKey);
+        if (enchantment != null) {
+            var enchantmentEntry = enchantmentRegistry.getEntry(enchantment);
+            if (enchantmentEntry != null) {
+                return EnchantmentHelper.getLevel(enchantmentEntry, stack);
+            }
         }
         return 0;
     }
