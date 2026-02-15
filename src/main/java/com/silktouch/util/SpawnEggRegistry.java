@@ -68,6 +68,8 @@ public class SpawnEggRegistry {
         register(EntityType.ZOGLIN, Items.ZOGLIN_SPAWN_EGG);
         register(EntityType.BOGGED, Items.BOGGED_SPAWN_EGG);
         // CREAKING spawn egg not available in this version
+        register(EntityType.CREEPER, Items.CREEPER_SPAWN_EGG);
+        register(EntityType.ZOMBIE_VILLAGER, Items.ZOMBIE_VILLAGER_SPAWN_EGG);
 
 
         // Rare/utility mobs
@@ -81,6 +83,7 @@ public class SpawnEggRegistry {
         register(EntityType.WITHER_SKELETON, Items.WITHER_SKELETON_SPAWN_EGG);
         register(EntityType.RAVAGER, Items.RAVAGER_SPAWN_EGG);
         register(EntityType.WARDEN, Items.WARDEN_SPAWN_EGG);
+        register(EntityType.BREEZE, Items.BREEZE_SPAWN_EGG);
 
         // Villagers and traders
         register(EntityType.VILLAGER, Items.VILLAGER_SPAWN_EGG);

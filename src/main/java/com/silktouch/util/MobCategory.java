@@ -71,7 +71,8 @@ public enum MobCategory {
                type == EntityType.HOGLIN ||
                type == EntityType.PIGLIN ||
                type == EntityType.SNIFFER ||
-               type == EntityType.ARMADILLO;
+               type == EntityType.ARMADILLO ||
+               type == EntityType.CAMEL;
     }
 
     private static boolean isNeutralHostile(EntityType<?> type) {
@@ -95,7 +96,9 @@ public enum MobCategory {
                type == EntityType.PIGLIN_BRUTE ||
                type == EntityType.ZOMBIFIED_PIGLIN ||
                type == EntityType.ZOGLIN ||
-               type == EntityType.BOGGED;
+               type == EntityType.BOGGED ||
+               type == EntityType.CREEPER ||
+               type == EntityType.ZOMBIE_VILLAGER;
 
     }
 
@@ -113,7 +116,8 @@ public enum MobCategory {
                type == EntityType.HOGLIN ||
                type == EntityType.PIGLIN ||
                type == EntityType.RAVAGER ||
-               type == EntityType.WARDEN;
+               type == EntityType.WARDEN ||
+               type == EntityType.BREEZE;
     }
 
     private static boolean isBoss(EntityType<?> type) {
