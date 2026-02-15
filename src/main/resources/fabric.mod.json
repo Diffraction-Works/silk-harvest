@@ -1,22 +1,22 @@
 {
   "schemaVersion": 1,
-  "id": "silktouch-spawn-eggs",
+  "id": "silk-harvest",
   "version": "${version}",
-  "name": "Silk Touch Spawn Eggs",
+  "name": "Silk Harvest",
   "description": "Mobs drop vanilla spawn eggs when killed with Silk Touch",
   "authors": [
-    "SilkTouch Team"
+    "Silk Harvest Team"
   ],
   "contact": {
     "homepage": "https://github.com/silktouch/spawn-eggs",
     "sources": "https://github.com/silktouch/spawn-eggs"
   },
   "license": "MIT",
-  "icon": "assets/silktouch-spawn-eggs/icon.png",
+  "icon": "assets/silk-harvest/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.silktouch.SilkTouchSpawnEggsMod"
+      "com.silktouch.SilkHarvestMod"
     ]
   },
   "depends": {

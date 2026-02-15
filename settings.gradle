@@ -9,4 +9,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'silktouch-spawn-eggs'
+rootProject.name = 'silk-harvest'

@@ -53,7 +53,7 @@ If the issue involves a specific mob, please provide:
 ## Configuration
 Please share your current config settings if you've modified them from defaults.
 
-Config file location: `config/silktouch-spawn-eggs.json`
+Config file location: `config/silk-harvest.json`
 
 ```json
 Paste your config file contents here
@@ -99,7 +99,7 @@ Paste crash report here (if applicable)
 Even if there was no crash, the latest.log may contain useful error messages.
 Log location: `.minecraft/logs/latest.log`
 
-Look for lines containing `[silktouch-spawn-eggs]` and paste relevant sections:
+Look for lines containing `[silk-harvest]` and paste relevant sections:
 
 ```
 Paste relevant log entries here

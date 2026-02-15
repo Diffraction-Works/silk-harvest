@@ -2,7 +2,7 @@ package com.silktouch.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.silktouch.SilkTouchSpawnEggsMod;
+import com.silktouch.SilkHarvestMod;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.File;
@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class ModConfig {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final File CONFIG_FILE = new File(FabricLoader.getInstance().getConfigDir().toFile(), "silktouch-spawn-eggs.json");
+    private static final File CONFIG_FILE = new File(FabricLoader.getInstance().getConfigDir().toFile(), "silk-harvest.json");
 
     // Default values
     public double commonPassiveChance = 0.70;
@@ -34,9 +34,9 @@ public class ModConfig {
         if (CONFIG_FILE.exists()) {
             try (FileReader reader = new FileReader(CONFIG_FILE)) {
                 INSTANCE = GSON.fromJson(reader, ModConfig.class);
-                SilkTouchSpawnEggsMod.LOGGER.info("Loaded configuration from {}", CONFIG_FILE.getAbsolutePath());
+                SilkHarvestMod.LOGGER.info("Loaded configuration from {}", CONFIG_FILE.getAbsolutePath());
             } catch (IOException e) {
-                SilkTouchSpawnEggsMod.LOGGER.error("Failed to load config, using defaults", e);
+                SilkHarvestMod.LOGGER.error("Failed to load config, using defaults", e);
                 INSTANCE = new ModConfig();
             }
         } else {
@@ -48,9 +48,9 @@ public class ModConfig {
     public static void save() {
         try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
             GSON.toJson(INSTANCE, writer);
-            SilkTouchSpawnEggsMod.LOGGER.info("Saved configuration to {}", CONFIG_FILE.getAbsolutePath());
+            SilkHarvestMod.LOGGER.info("Saved configuration to {}", CONFIG_FILE.getAbsolutePath());
         } catch (IOException e) {
-            SilkTouchSpawnEggsMod.LOGGER.error("Failed to save config", e);
+            SilkHarvestMod.LOGGER.error("Failed to save config", e);
         }
     }
 

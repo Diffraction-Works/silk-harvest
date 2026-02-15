@@ -10,13 +10,13 @@ import net.minecraft.server.world.ServerWorld;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SilkTouchSpawnEggsMod implements ModInitializer {
-    public static final String MOD_ID = "silktouch-spawn-eggs";
+public class SilkHarvestMod implements ModInitializer {
+    public static final String MOD_ID = "silk-harvest";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     @Override
     public void onInitialize() {
-        LOGGER.info("Initializing Silk Touch Spawn Eggs Mod");
+        LOGGER.info("Initializing Silk Harvest Mod");
 
         // Load configuration
         ModConfig.load();
@@ -31,6 +31,6 @@ public class SilkTouchSpawnEggsMod implements ModInitializer {
             }
         });
 
-        LOGGER.info("Silk Touch Spawn Eggs Mod initialized successfully");
+        LOGGER.info("Silk Harvest Mod initialized successfully");
     }
 }
