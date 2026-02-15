@@ -13,9 +13,9 @@ When a mob is killed by a player using a **Silk Touch enchanted item**, there's 
 
 | Category | Mobs | Base Chance | Special Requirements |
 |----------|------|--------------|---------------------|
-| **Common Passive** | Cow, Pig, Sheep, Chicken, Rabbit, Cod, Salmon, Tropical Fish | 70% | Baby penalty: -20% |
-| **Neutral/Hostile** | Zombie, Skeleton, Spider, Enderman, Drowned, Stray, Husk, Wolf, Bee | 30% | No spawner/tamed drops |
-| **Rare/Utility** | Slime, Witch, Guardian, Blaze, Ghast, Endermite, Shulker | 10% | Requires Looting II+ |
+| **Common Passive** | Cow, Pig, Sheep, Chicken, Rabbit, Camel, Cod, Salmon, Tropical Fish | 70% | Baby penalty: -20% |
+| **Neutral/Hostile** | Zombie, Skeleton, Spider, Creeper, Enderman, Drowned, Stray, Husk, Zombie Villager, Wolf, Bee | 30% | No spawner/tamed drops |
+| **Rare/Utility** | Slime, Witch, Guardian, Blaze, Breeze, Ghast, Endermite, Shulker | 10% | Requires Looting II+ |
 | **Bosses** | Ender Dragon, Wither | 0% | Excluded for balance |
 
 #### Balancing Mechanics
