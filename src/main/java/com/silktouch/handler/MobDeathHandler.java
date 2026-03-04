@@ -1,5 +1,6 @@
 package com.silktouch.handler;
 
+import com.silktouch.SilkHarvestMod;
 import com.silktouch.config.ModConfig;
 import com.silktouch.util.MobCategory;
 import com.silktouch.util.SpawnEggRegistry;
@@ -25,10 +26,27 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class MobDeathHandler {
     private static final Random RANDOM = new Random();
+    private static final Map<Class<?>, Method> LOOT_TABLE_GETTERS = new HashMap<>();
+    private static final Map<Class<?>, Method> LOOT_TABLE_SETTERS = new HashMap<>();
+    private static boolean lootTableClearingEnabled = true;
+
+    // Cache methods using LivingEntity.class since getLootTableKey and setLootTableKey
+    // are inherited from the base LivingEntity class
+    static {
+        try {
+            LOOT_TABLE_GETTERS.put(LivingEntity.class, LivingEntity.class.getMethod("getLootTableKey"));
+            LOOT_TABLE_SETTERS.put(LivingEntity.class, LivingEntity.class.getMethod("setLootTableKey", Identifier.class));
+        } catch (NoSuchMethodException e) {
+            SilkHarvestMod.LOGGER.warn("Could not find loot table methods on LivingEntity: {}", e.getMessage());
+        }
+    }
 
     public static void handleMobDeath(LivingEntity entity, DamageSource damageSource, ServerWorld world) {
         // Check if killer is a player
@@ -41,6 +59,37 @@ public class MobDeathHandler {
         ItemStack mainHandItem = player.getMainHandStack();
         if (getEnchantmentLevel(world, net.minecraft.enchantment.Enchantments.SILK_TOUCH, mainHandItem) <= 0) {
             return;
+        }
+
+        // Clear vanilla mob drops when Silk Touch is detected
+        // This prevents XP, leather, bones, arrows, etc. from dropping
+        // In MC 1.21+, use setLootTableKey with a custom/empty loot table
+        if (lootTableClearingEnabled) {
+            try {
+                // Clear vanilla mob drops when Silk Touch is detected
+                // Use LivingEntity.class for method lookup since these methods are inherited
+                // Get or cache the getter method - use LivingEntity.class for lookup
+                Method lootTableKeyMethod = LOOT_TABLE_GETTERS.get(LivingEntity.class);
+                
+                java.util.Optional<net.minecraft.util.Identifier> currentLootTable = (java.util.Optional<net.minecraft.util.Identifier>) lootTableKeyMethod.invoke(entity);
+                if (currentLootTable.isPresent()) {
+                    // Get or cache the setter method - use LivingEntity.class for lookup
+                    Method setLootTableKeyMethod = LOOT_TABLE_SETTERS.get(LivingEntity.class);
+                    setLootTableKeyMethod.invoke(entity, net.minecraft.util.Identifier.of("minecraft", "empty"));
+                }
+            } catch (NoSuchMethodError e) {
+                // MC version mismatch - method doesn't exist in this version
+                lootTableClearingEnabled = false;
+                SilkHarvestMod.LOGGER.warn("Mob loot table clearing not supported in this MC version: {}", e.getMessage());
+            } catch (IllegalArgumentException e) {
+                // Method invocation failed - entity type doesn't support this operation
+                lootTableClearingEnabled = false;
+                SilkHarvestMod.LOGGER.warn("Could not clear mob loot table (illegal argument): {}", e.getMessage());
+            } catch (Exception e) {
+                // Generic reflection error - disable for future calls
+                lootTableClearingEnabled = false;
+                SilkHarvestMod.LOGGER.warn("Could not clear mob loot table, disabling feature: {}", e.getMessage());
+            }
         }
 
         // Get mob category
@@ -92,7 +141,19 @@ public class MobDeathHandler {
      * Drop an item at the entity's position
      */
     private static void dropItem(ServerWorld world, LivingEntity entity, ItemStack stack) {
-        Vec3d pos = entity.getEyePos();
+        // Use getEyePos with null safety to avoid crashes when entity is removed
+        // getEyePos() may fail on dead entities, so fallback to direct coordinates
+        Vec3d pos;
+        try {
+            pos = entity.getEyePos();
+            if (pos == null) {
+                throw new NullPointerException("Eye position is null");
+            }
+        } catch (Exception e) {
+            SilkHarvestMod.LOGGER.debug("Failed to get eye position, using fallback: {}", e.getMessage());
+            // Fallback to direct coordinates if getEyePos fails
+            pos = new Vec3d(entity.getX(), entity.getY(), entity.getZ());
+        }
         ItemEntity itemEntity = new ItemEntity(world, pos.x, pos.y, pos.z, stack);
         itemEntity.setToDefaultPickupDelay();
         world.spawnEntity(itemEntity);

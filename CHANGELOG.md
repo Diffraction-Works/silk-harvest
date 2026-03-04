@@ -1,16 +1,4 @@
-<!-- 
 # Changelog
-
-All notable changes to this project will be documented in this file.
-
-Do not remove this comment and keep it at the top of the changelog.
-
-Use: Added, Changed, Fixed, Updated Dependencies, Technical. Feel free to exclude or include them when needed. Use ## [Version] - [Supported Minecraft Versions (currently 1.21-1.21.1)] for changelog titles.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
--->
-
 
 ## [1.2.0] - 1.21-1.21.1
 
